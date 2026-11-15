@@ -4,6 +4,8 @@ import type { Image } from '../Image.ts';
 import type { Mask } from '../Mask.ts';
 import { imageToOutputMask } from '../utils/getOutputImage.ts';
 
+import type { LocalThresholdOptions } from './localThreshold.ts';
+import { localThreshold } from './localThreshold.ts';
 import huang from './thresholds/huang.ts';
 import intermodes from './thresholds/intermodes.ts';
 import isodata from './thresholds/isodata.ts';
@@ -19,6 +21,9 @@ import renyiEntropy from './thresholds/renyiEntropy.ts';
 import shanbhag from './thresholds/shanbhag.ts';
 import { triangle } from './thresholds/triangle.ts';
 import yen from './thresholds/yen.ts';
+
+export type { LocalThresholdOptions } from './localThreshold.ts';
+export { adaptiveThreshold, localThreshold } from './localThreshold.ts';
 
 export const ThresholdAlgorithm = {
   HUANG: 'huang',
@@ -68,7 +73,17 @@ export interface ThresholdOptionsAlgorithm extends ThresholdOptionsBase {
 }
 
 export type ThresholdOptions =
-  ThresholdOptionsThreshold | ThresholdOptionsAlgorithm;
+  ThresholdOptionsThreshold | ThresholdOptionsAlgorithm | ThresholdLocalOptions;
+
+/**
+ * Options to compare every pixel with the mean of its neighbours.
+ */
+export interface ThresholdLocalOptions extends LocalThresholdOptions {
+  /**
+   * Use the local threshold instead of a threshold shared by the whole image.
+   */
+  local: true;
+}
 
 /**
  * Compute threshold value for an image using the specified algorithm.
@@ -116,6 +131,9 @@ export function computeThreshold(
  * @returns The resulting mask.
  */
 export function threshold(image: Image, options: ThresholdOptions = {}): Mask {
+  if ('local' in options && options.local) {
+    return localThreshold(image, options);
+  }
   let thresholdValue: number;
 
   if ('threshold' in options) {

@@ -4,6 +4,7 @@ export * from './extract.ts';
 export * from './merge.ts';
 export * from './split.ts';
 export * from './threshold.ts';
+export * from './localThreshold.ts';
 export * from './grey.ts';
 export * from './copyTo.ts';
 export * from './crop.ts';

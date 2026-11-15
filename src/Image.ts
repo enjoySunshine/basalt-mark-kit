@@ -108,10 +108,12 @@ import type {
   CropRectangleOptions,
   ExtractOptions,
   GreyOptions,
+  LocalThresholdOptions,
   PaintMaskOnImageOptions,
   ThresholdOptions,
 } from './operations/index.ts';
 import {
+  adaptiveThreshold,
   convertBitDepth,
   convertColor,
   copyTo,
@@ -120,6 +122,7 @@ import {
   cropRectangle,
   extract,
   grey,
+  localThreshold,
   paintMaskOnImage,
   split,
   threshold,
@@ -912,6 +915,26 @@ export class Image {
 
   public threshold(options: ThresholdOptions = {}): Mask {
     return threshold(this, options);
+  }
+
+  /**
+   * Create a mask by comparing every pixel with the mean of the pixels that
+   * touch it.
+   * @param options - Local threshold options.
+   * @returns The resulting mask.
+   */
+  public localThreshold(options: LocalThresholdOptions = {}): Mask {
+    return localThreshold(this, options);
+  }
+
+  /**
+   * Create a mask by comparing every pixel with the mean of the pixels that
+   * touch it.
+   * @param options - Local threshold options.
+   * @returns The resulting mask.
+   */
+  public adaptiveThreshold(options: LocalThresholdOptions = {}): Mask {
+    return adaptiveThreshold(this, options);
   }
 
   /**
